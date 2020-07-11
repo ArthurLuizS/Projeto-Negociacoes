@@ -10,8 +10,10 @@ static create(objeto, props, acao){
                 return function(){
                     
                     console.log(`${prop} interceptado`)
-                    Reflect.apply(target[prop], target, arguments)
-                  return acao(target)
+                  let retorno =  Reflect.apply(target[prop], target, arguments)
+                   acao(target)
+                   return retorno
+                  
                 }
                 
             }
@@ -20,10 +22,11 @@ static create(objeto, props, acao){
 
         set(target, prop, value, receiver){
             
-            Reflect.set(target, prop, value, receiver);
+            
             
             if(props.includes(prop)){
                 console.log(`${prop} interceptado`)
+                target[prop] = value
                 acao(target)
             }
             return  Reflect.set(target, prop, value, receiver);
