@@ -25,4 +25,5 @@ class Negociacao {
     get volume(){
         return this._volume
     }
+    
 }
