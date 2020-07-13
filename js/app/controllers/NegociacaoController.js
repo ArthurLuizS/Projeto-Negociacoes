@@ -36,25 +36,40 @@ class NegociacaoController {
     }
 
     importarNegociacao(){
-        let xhr = new XMLHttpRequest();
-        xhr.open('GET', 'negociacoes/semana')
-        xhr.onreadystatechange = () =>{
+        let service = new NegociacaoService()
 
-            if(xhr.readyState == 4){
-                if(xhr.status == 200){
+        service.importarSemana((erro, negociacao) => {
 
-                    JSON.parse(xhr.responseText).map(objeto => 
-                        new Negociacao(new Date(objeto.data), objeto.quantidade, objeto.valor)
-                    ).forEach(negociacao => 
-                        this._negociacoes.adiciona(negociacao));
-                        this._mensagem.texto = 'Adicionadas com sucesso'
-                }else{
-                    this._mensagem.texto = "Erro ao adicionar"
-                    console.log("erro")
-                }
+            if(erro){
+                this._mensagem.texto = erro
+                return
             }
-        }
-        xhr.send()
+            negociacao.forEach(negociaca => 
+                this._negociacoes.adiciona(negociaca));
+                this._mensagem.texto = "Importadas com sucesso"
+        })
+        service.importarSemanaAnterior((erro, negociacao) => {
+
+            if(erro){
+                this._mensagem.texto = erro
+                return
+            }
+            negociacao.forEach(negociaca => 
+                this._negociacoes.adiciona(negociaca));
+                this._mensagem.texto = "Importadas com sucesso"
+        })
+        service.importarSemanaRetrasada((erro, negociacao) => {
+
+            if(erro){
+                this._mensagem.texto = erro
+                return
+            }
+            negociacao.forEach(negociaca => 
+                this._negociacoes.adiciona(negociaca));
+                this._mensagem.texto = "Importadas com sucesso"
+        })
+
+      
     }
 
     _criarNegociacao(){
