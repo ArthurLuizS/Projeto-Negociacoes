@@ -1,59 +1,53 @@
 class NegociacaoService{
 
-
-    importarSemana(cb){
-        let xhr = new XMLHttpRequest();
-        xhr.open('GET', 'negociacoes/semana')
-        xhr.onreadystatechange = () =>{
-
-            if(xhr.readyState == 4){
-                if(xhr.status == 200){
-
-                    cb(null, JSON.parse(xhr.responseText).map(objeto => 
-                        new Negociacao(new Date(objeto.data), objeto.quantidade, objeto.valor)
-                    ))
-                }else{
-                    cb("Erro ao importar", null)
-                }
-            }
-        }
-        xhr.send()
+    constructor(){
+        this._http = new HttpService()
     }
 
-    importarSemanaAnterior(cb){
-        let xhr = new XMLHttpRequest();
-        xhr.open('GET', 'negociacoes/anterior')
-        xhr.onreadystatechange = () =>{
+    importarSemana(){
+        return new Promise((resolve, reject) =>{
+           
+            this._http.get('negociacoes/semana')
+            .then(negociacoes => { 
+                resolve(negociacoes.map(
+                    objeto => new Negociacao(new Date(objeto.data), objeto.quantidade, objeto.valor)))
+            })
+            .catch(erro =>{
+                console.log(erro)
+                reject("Nao foi possivel obter as negociacoes da semana")
+            })
+       
+        })
+}
 
-            if(xhr.readyState == 4){
-                if(xhr.status == 200){
-
-                    cb(null, JSON.parse(xhr.responseText).map(objeto => 
-                        new Negociacao(new Date(objeto.data), objeto.quantidade, objeto.valor)
-                    ))
-                }else{
-                    cb("Erro ao importar", null)
-                }
-            }
-        }
-        xhr.send()
+    importarSemanaAnterior(){
+        return new Promise((resolve, reject) =>{
+           
+            this._http.get('negociacoes/anterior')
+            .then(negociacoes => { 
+                resolve(negociacoes.map(
+                    objeto => new Negociacao(new Date(objeto.data), objeto.quantidade, objeto.valor)))
+            })
+            .catch(erro =>{
+                console.log(erro)
+                reject("Nao foi possivel obter as negociacoes da semana anterior")
+            })
+       
+        })
     }
-    importarSemanaRetrasada(cb){
-        let xhr = new XMLHttpRequest();
-        xhr.open('GET', 'negociacoes/Retrasada')
-        xhr.onreadystatechange = () =>{
-
-            if(xhr.readyState == 4){
-                if(xhr.status == 200){
-
-                    cb(null, JSON.parse(xhr.responseText).map(objeto => 
-                        new Negociacao(new Date(objeto.data), objeto.quantidade, objeto.valor)
-                    ))
-                }else{
-                    cb("Erro ao importar", null)
-                }
-            }
-        }
-        xhr.send()
+    importarSemanaRetrasada(){
+        return new Promise((resolve, reject) =>{
+           
+            this._http.get('negociacoes/retrasada')
+            .then(negociacoes => { 
+                resolve(negociacoes.map(
+                    objeto => new Negociacao(new Date(objeto.data), objeto.quantidade, objeto.valor)))
+            })
+            .catch(erro =>{
+                console.log(erro)
+                reject("Nao foi possivel obter as negociacoes da semana retrasada")
+            })
+       
+        })
     }
 }
