@@ -38,39 +38,41 @@ class NegociacaoController {
     importarNegociacao(){
         let service = new NegociacaoService()
 
-        service.importarSemana((erro, negociacao) => {
+        Promise.all([
+            service.importarSemana(), 
+            service.importarSemanaAnterior(),
+            service.importarSemanaRetrasada()])
+                .then( negociacoes =>{
+                    negociacoes
+                        .reduce((arrayAchatado, array) =>arrayAchatado.concat(array), [] )
+                        .forEach(negociacao =>  this._negociacoes.adiciona(negociacao));
+                        this._mensagem.texto = "Negociacoes importadas com sucesso!"
+                })
+                .catch( error => this._mensagem.texto = error)
 
-            if(erro){
-                this._mensagem.texto = erro
-                return
-            }
-            negociacao.forEach(negociaca => 
-                this._negociacoes.adiciona(negociaca));
-                this._mensagem.texto = "Importadas com sucesso"
-        })
-        service.importarSemanaAnterior((erro, negociacao) => {
+       /* service.importarSemana()
+            .then(negociacoes => {
+                negociacoes.forEach(negociacao => this._negociacoes.adiciona(negociacao))
+                this._mensagem.texto = "Importadas da semana com sucesso" 
+            })
+            .catch(erro => this._mensagem.texto= erro)
+        service.importarSemanaAnterior()
+            .then(negociacoes => {
+                negociacoes.forEach(negociacao => this._negociacoes.adiciona(negociacao))
+                this._mensagem.texto = "Importadas da semana anterior com sucesso" 
+            })
+            .catch(erro => this._mensagem.texto= erro)
+        service.importarSemanaRetrasada()
+            .then(negociacoes => {
+                negociacoes.forEach(negociacao => this._negociacoes.adiciona(negociacao))
+                this._mensagem.texto = "Importadas da semana retrasada com sucesso" 
+            })
+            .catch(erro => this._mensagem.texto= erro) */
+        
+        }     
 
-            if(erro){
-                this._mensagem.texto = erro
-                return
-            }
-            negociacao.forEach(negociaca => 
-                this._negociacoes.adiciona(negociaca));
-                this._mensagem.texto = "Importadas com sucesso"
-        })
-        service.importarSemanaRetrasada((erro, negociacao) => {
-
-            if(erro){
-                this._mensagem.texto = erro
-                return
-            }
-            negociacao.forEach(negociaca => 
-                this._negociacoes.adiciona(negociaca));
-                this._mensagem.texto = "Importadas com sucesso"
-        })
-
-      
-    }
+       
+    
 
     _criarNegociacao(){
         return new Negociacao(
